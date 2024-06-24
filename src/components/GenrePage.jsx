@@ -17,6 +17,7 @@ const GenrePage = () => {
         }
         const data = await response.json();
         setGenre(data);
+        console.log(data)
       } catch (err) {
         setError(err.message);
       } finally {

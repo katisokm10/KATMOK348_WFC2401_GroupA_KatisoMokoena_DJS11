@@ -1,8 +1,16 @@
 import 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { format } from 'date-fns';
 
 const PodcastList = ({ podcasts }) => {
+  const truncateDescription = (description, maxLength) => {
+    if (description.length <= maxLength) {
+      return description;
+    }
+    return description.slice(0, maxLength) + '...';
+  };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {podcasts.map((podcast) => (
@@ -16,10 +24,12 @@ const PodcastList = ({ podcasts }) => {
           )}
           <div className="p-4">
             <h2 className="text-xl font-bold mb-2">{podcast.title}</h2>
-            <p className="text-gray-700 mb-4">{podcast.description}</p>
-            <div className="flex justify-between items-center">
-              <span className="text-gray-600">Seasons: {podcast.seasons}</span>
-              <span className="text-gray-600">Updated: {podcast.updated}</span>
+            <p className="text-gray-700 mb-4">
+              {truncateDescription(podcast.description, 100)}
+            </p>
+            <div className="flex flex-col">
+              <span className="text-gray-600 mb-2">Seasons: {podcast.seasons}</span>
+              <span className="text-gray-600">Updated: {format(new Date(podcast.updated), 'MMMM dd, yyyy')}</span>
             </div>
           </div>
         </Link>
