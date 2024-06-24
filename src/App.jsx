@@ -1,15 +1,17 @@
+import  'react';
+import { Route, Routes } from 'react-router-dom';
+import HomePage from './pages/HomePage';
+import PodcastPage from './components/PodcastPage';
+import GenrePage from './components/GenrePage';
 
-import './App.css'
-
-function App() {
-  
-
+const App = () => {
   return (
-    <>
-    <h1 className='text-xl font-bold text-red-500'>Hello Guys</h1>
-     
-    </>
-  )
-}
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/podcast/:id" element={<PodcastPage />} />
+      <Route path="/genre/:id" element={<GenrePage />} />
+    </Routes>
+  );
+};
 
-export default App
+export default App;
