@@ -1,10 +1,33 @@
-import 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { getGenreNameById } from '../data/Genres'; // Import getGenreNameById function
 
 const PodcastList = ({ podcasts }) => {
+  const [genres, setGenres] = useState([]);
+
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const response = await fetch('https://your-genre-api-url'); // Replace with your genre API endpoint
+        if (!response.ok) {
+          throw new Error('Failed to fetch genres');
+        }
+        const data = await response.json();
+        setGenres(data); // Assuming data is an array of genre objects with id and name
+      } catch (error) {
+        console.error('Error fetching genres:', error);
+      }
+    };
+
+    fetchGenres();
+  }, []);
+
+  const getGenreNameById = (genreId) => {
+    const genre = genres.find(g => g.id === genreId);
+    return genre ? genre.name : 'Loading...';
+  };
+
   const truncateDescription = (description, maxLength) => {
     if (description.length <= maxLength) {
       return description;
@@ -13,7 +36,7 @@ const PodcastList = ({ podcasts }) => {
   };
 
   return (
-    <div className="bg-gray-100 min-h-screen p-4"> {/* Set a subtle background color */}
+    <div className="bg-gray-100 min-h-screen p-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {podcasts.map((podcast) => (
           <Link to={`/podcast/${podcast.id}`} key={podcast.id} className="bg-white rounded-lg shadow-lg overflow-hidden block transform transition duration-300 hover:scale-105">
@@ -31,7 +54,7 @@ const PodcastList = ({ podcasts }) => {
               </p>
               <div className="flex flex-col">
                 <span className="text-gray-700 mb-2">
-                  Genre: {getGenreNameById(podcast.genre_id) || 'Loading...'}
+                  Genre: {getGenreNameById(podcast.genre_id)}
                 </span>
                 <span className="text-gray-700 mb-2">Seasons: {podcast.seasons}</span>
                 <span className="text-gray-700">
