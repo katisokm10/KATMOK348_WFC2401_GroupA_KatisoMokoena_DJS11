@@ -21,12 +21,14 @@ const PodcastPage = () => {
         }
         const data = await response.json();
         setPodcast(data);
+        console.log(data)
       } catch (error) {
         console.error('Error fetching podcast:', error);
       } finally {
         setIsLoading(false);
       }
     };
+    
 
     fetchPodcast();
   }, [id]);
