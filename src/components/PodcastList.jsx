@@ -2,7 +2,7 @@ import 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
-import { getGenreNameById } from './data/Genres'; // Import getGenreNameById function
+import { getGenreNameById } from './Genres'; // Import getGenreNameById function
 
 const PodcastList = ({ podcasts }) => {
   const truncateDescription = (description, maxLength) => {

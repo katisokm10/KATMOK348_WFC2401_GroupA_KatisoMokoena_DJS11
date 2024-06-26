@@ -1,29 +1,25 @@
 import 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AiFillThunderbolt, AiOutlineLogout } from 'react-icons/ai';
 import { FaRegHeart } from 'react-icons/fa';
 import { RiHomeLine } from 'react-icons/ri';
-import SearchBar from './SearchBar'; // Import SearchBar component
+import SearchBar from './SearchBar';
 
 const Header = () => {
   const location = useLocation();
-  const navigate = useNavigate(); // Use useNavigate hook to navigate programmatically
+  const navigate = useNavigate();
 
-  // Conditionally render header only if not on login page
   if (location.pathname === '/') {
     return null; // Render nothing if on the login page
   }
 
   const handleSearch = (searchQuery) => {
-    // Handle search functionality here, e.g., navigate to search results page
     console.log('Searching for:', searchQuery);
-    // Example: navigate to search results page
-    // history.push(`/search?q=${searchQuery}`);
+    // Implement search logic, e.g., navigate to search results
+    // Example: navigate(`/search?q=${searchQuery}`);
   };
 
   const handleLogout = () => {
-    // Implement logout logic here, e.g., clear session, remove tokens, etc.
-    // For demo purposes, simulate logout and navigate to login page
     console.log('Logging out...');
     navigate('/'); // Navigate to login page
   };
@@ -42,7 +38,6 @@ const Header = () => {
                 <RiHomeLine className="mr-2" />
                 Home
               </Link>
-              
               <Link to="/genres" className="text-white text-lg flex items-center hover:text-blue-300 transition duration-300 font-bold">
                 <FaRegHeart className="mr-2" />
                 Favourites
@@ -50,11 +45,10 @@ const Header = () => {
             </nav>
           </div>
           <div className="flex-grow mx-8">
-            {/* Include the SearchBar component */}
             <SearchBar onSearch={handleSearch} />
           </div>
           <button
-            onClick={handleLogout} // Call handleLogout function on button click
+            onClick={handleLogout}
             className="bg-blue-700 hover:bg-blue-600 text-white px-4 py-2 rounded-full flex items-center transition duration-300"
           >
             <AiOutlineLogout className="mr-2" />
