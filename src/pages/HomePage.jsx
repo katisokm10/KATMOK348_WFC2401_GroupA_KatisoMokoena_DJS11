@@ -6,15 +6,21 @@ const HomePage = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('A-Z');
+  const [error, setError] = useState(null); // State for handling errors
 
   useEffect(() => {
     const fetchPodcasts = async () => {
       try {
         setIsLoading(true);
         const response = await fetch('https://podcast-api.netlify.app');
+        if (!response.ok) {
+          throw new Error('Failed to fetch podcasts');
+        }
         const data = await response.json();
         setPodcasts(data);
+        setError(null); // Clear any previous errors
       } catch (error) {
+        setError('Error fetching podcasts. Please try again later.'); // Set error state
         console.error('Error fetching podcasts:', error);
       } finally {
         setIsLoading(false);
@@ -81,6 +87,8 @@ const HomePage = () => {
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-navy-300"></div>
         </div>
+      ) : error ? (
+        <p className="text-red-600 text-center">{error}</p>
       ) : (
         <PodcastList podcasts={sortedPodcasts} />
       )}
