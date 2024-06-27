@@ -10,6 +10,7 @@ const PodcastPage = () => {
   const [likedEpisodes, setLikedEpisodes] = useState(() => {
     return JSON.parse(localStorage.getItem('likedEpisodes')) || [];
   });
+  const [seasonEpisodesCount, setSeasonEpisodesCount] = useState([]);
 
   useEffect(() => {
     const fetchPodcast = async () => {
@@ -21,14 +22,18 @@ const PodcastPage = () => {
         }
         const data = await response.json();
         setPodcast(data);
-        console.log(data)
+        console.log('Podcast Data:', data);
+
+        // Calculate episode counts for each season
+        const episodeCounts = data.seasons.map(season => season.episodes.length);
+        setSeasonEpisodesCount(episodeCounts);
+
       } catch (error) {
         console.error('Error fetching podcast:', error);
       } finally {
         setIsLoading(false);
       }
     };
-    
 
     fetchPodcast();
   }, [id]);
@@ -38,21 +43,26 @@ const PodcastPage = () => {
   };
 
   const handleLikeEpisode = (episodeId) => {
-    if (likedEpisodes.includes(episodeId)) {
-      setLikedEpisodes(likedEpisodes.filter(id => id !== episodeId));
-    } else {
-      setLikedEpisodes([...likedEpisodes, episodeId]);
-    }
+    setLikedEpisodes((prevLikedEpisodes) => {
+      if (prevLikedEpisodes.includes(episodeId)) {
+        return prevLikedEpisodes.filter(id => id !== episodeId);
+      } else {
+        return [...prevLikedEpisodes, episodeId];
+      }
+    });
   };
 
   useEffect(() => {
     localStorage.setItem('likedEpisodes', JSON.stringify(likedEpisodes));
+    console.log('Liked Episodes:', likedEpisodes);
   }, [likedEpisodes]);
 
   if (isLoading) {
-    return <div className="flex justify-center items-center h-64">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
-    </div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   if (!podcast) {
@@ -93,13 +103,18 @@ const PodcastPage = () => {
                 </option>
               ))}
             </select>
+            <span className="ml-4 text-gray-600">
+              
+            </span>
           </div>
         </div>
       )}
 
       {podcast.seasons && podcast.seasons.length > 0 && (
         <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Episodes</h3>
+          <h3 className="text-xl font-semibold text-gray-800 mb-4">
+            Episodes: {seasonEpisodesCount[selectedSeason]}
+          </h3>
           <ul className="space-y-4">
             {podcast.seasons[selectedSeason].episodes.map((episode) => (
               <li key={episode.id} className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center">

@@ -38,7 +38,7 @@ const Header = () => {
                 <RiHomeLine className="mr-2" />
                 Home
               </Link>
-              <Link to="/genres" className="text-white text-lg flex items-center hover:text-blue-300 transition duration-300 font-bold">
+              <Link to="/favourites" className="text-white text-lg flex items-center hover:text-blue-300 transition duration-300 font-bold">
                 <FaRegHeart className="mr-2" />
                 Favourites
               </Link>
