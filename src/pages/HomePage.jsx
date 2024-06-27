@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { getGenreNameById } from '../components/Genres';
+
 
 const HomePage = () => {
   const [podcasts, setPodcasts] = useState([]);
@@ -35,6 +35,27 @@ const HomePage = () => {
 
     fetchPodcasts();
   }, []);
+
+  const genres = [
+    { id: 0, name: 'All' },
+    { id: 1, name: 'Personal Growth' },
+    { id: 2, name: 'Investigative Journalism' },
+    { id: 3, name: 'History' },
+    { id: 4, name: 'Comedy' },
+    { id: 5, name: 'Entertainment' },
+    { id: 6, name: 'Business' },
+    { id: 7, name: 'Fiction' },
+    { id: 8, name: 'News' },
+    { id: 9, name: 'Kids and Family' },
+  ];
+
+  const getGenresFromIds = (genreIds) => {
+    return genreIds.map(id => {
+      const genre = genres.find(genre => genre.id === id);
+      return genre ? genre.name : '';
+    }).filter(Boolean); // Filter out any empty strings
+  };
+
 
   const sortPodcasts = (podcasts, order) => {
     switch (order) {
@@ -132,7 +153,7 @@ const HomePage = () => {
                     </p>
                     <div className="flex flex-col">
                       <span className="text-gray-700 mb-1">
-                        Genre: {getGenreNameById(podcast.genre_id) || 'Loading...'}
+                        Genre: {getGenresFromIds(podcast.genres).join(', ')}
                       </span>
                       <span className="text-gray-700 mb-1">Seasons: {podcast.seasons}</span>
                       <span className="text-gray-700">
