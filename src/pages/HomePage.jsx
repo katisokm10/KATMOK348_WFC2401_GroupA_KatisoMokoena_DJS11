@@ -7,12 +7,12 @@ import { Link } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-
 const HomePage = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('A-Z');
   const [error, setError] = useState(null);
+  const [selectedGenre, setSelectedGenre] = useState(0);
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -56,7 +56,6 @@ const HomePage = () => {
     }).filter(Boolean); // Filter out any empty strings
   };
 
-
   const sortPodcasts = (podcasts, order) => {
     switch (order) {
       case 'A-Z':
@@ -76,7 +75,17 @@ const HomePage = () => {
     setSortOrder(order);
   };
 
+  const handleGenreChange = (event) => {
+    setSelectedGenre(parseInt(event.target.value));
+  };
+
+  const filterPodcastsByGenre = (podcasts, genreId) => {
+    if (genreId === 0) return podcasts; // If "All" is selected, return all podcasts
+    return podcasts.filter(podcast => podcast.genres.includes(genreId));
+  };
+
   const sortedPodcasts = sortPodcasts(podcasts, sortOrder);
+  const filteredPodcasts = filterPodcastsByGenre(sortedPodcasts, selectedGenre);
 
   const truncateDescription = (description, maxLength) => {
     if (description.length <= maxLength) {
@@ -197,6 +206,16 @@ const HomePage = () => {
         >
           Oldest
         </button>
+        <select
+          onChange={handleGenreChange}
+          className="px-4 py-2 rounded-full border bg-white text-blue-900"
+        >
+          {genres.map((genre) => (
+            <option key={genre.id} value={genre.id}>
+              {genre.name}
+            </option>
+          ))}
+        </select>
       </div>
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
@@ -205,7 +224,7 @@ const HomePage = () => {
       ) : error ? (
         <p className="text-red-600 text-center">{error}</p>
       ) : (
-        <PodcastList podcasts={sortedPodcasts} />
+        <PodcastList podcasts={filteredPodcasts} />
       )}
     </div>
   );
