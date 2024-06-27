@@ -3,15 +3,16 @@ import PodcastList from '../components/PodcastList';
 import { AiFillThunderbolt } from 'react-icons/ai';
 import Slider from 'react-slick';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { getGenreNameById } from '../components/Genres'; // Adjust the path according to your file structure
+import { getGenreNameById } from '../components/Genres';
 
 const HomePage = () => {
   const [podcasts, setPodcasts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState('A-Z');
-  const [error, setError] = useState(null); // State for handling errors
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPodcasts = async () => {
@@ -23,9 +24,9 @@ const HomePage = () => {
         }
         const data = await response.json();
         setPodcasts(data);
-        setError(null); // Clear any previous errors
+        setError(null);
       } catch (error) {
-        setError('Error fetching podcasts. Please try again later.'); // Set error state
+        setError('Error fetching podcasts. Please try again later.');
         console.error('Error fetching podcasts:', error);
       } finally {
         setIsLoading(false);
@@ -56,7 +57,6 @@ const HomePage = () => {
 
   const sortedPodcasts = sortPodcasts(podcasts, sortOrder);
 
-  // Truncate description utility function
   const truncateDescription = (description, maxLength) => {
     if (description.length <= maxLength) {
       return description;
@@ -64,9 +64,7 @@ const HomePage = () => {
     return description.slice(0, maxLength) + '...';
   };
 
-  // Shuffle function specifically for the carousel
   const shuffleArrayForCarousel = (array) => {
-    // Fisher-Yates shuffle algorithm
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -74,39 +72,40 @@ const HomePage = () => {
     return array;
   };
 
-  // Settings for the carousel
   const carouselSettings = {
-    dots: false, // Remove dots
+    dots: false,
     infinite: true,
     speed: 500,
-    slidesToShow: 2, // Display 2 slides at a time
-    slidesToScroll: 1,
+    slidesToShow: 2,
+    slidesToScroll: 2,
+    autoplay: true, // Enable autoplay
+    autoplaySpeed: 3000, // Set autoplay speed in milliseconds (3 seconds)
     responsive: [
       {
         breakpoint: 1024,
         settings: {
           slidesToShow: 2,
+          slidesToScroll: 2,
         },
       },
       {
         breakpoint: 768,
         settings: {
           slidesToShow: 1,
+          slidesToScroll: 1,
         },
       },
     ],
   };
 
-  // Shuffled podcasts for the carousel section
   const shuffledPodcasts = shuffleArrayForCarousel(podcasts);
 
   return (
     <div className="container mx-auto py-8">
-      {/* Carousel Section */}
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-4 flex items-center text-black">
           <AiFillThunderbolt className="mr-2 text-blue-300" />
-          <span>Featured Podcasts</span>
+          <span>Recommended For You</span>
         </h2>
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
@@ -117,7 +116,7 @@ const HomePage = () => {
         ) : (
           <Slider {...carouselSettings}>
             {shuffledPodcasts.map((podcast) => (
-              <div key={podcast.id} className="outline-none p-2">
+              <Link to={`/podcast/${podcast.id}`} key={podcast.id} className="outline-none p-2">
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden block transform transition duration-300 hover:scale-105">
                   {podcast.image ? (
                     <img src={podcast.image} alt={podcast.title} className="w-full h-40 object-cover" />
@@ -142,13 +141,12 @@ const HomePage = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </Slider>
         )}
       </div>
 
-      {/* Discover more Podcasts Section */}
       <h2 className="text-2xl font-bold mb-4 flex items-center text-black">
         <AiFillThunderbolt className="mr-2 text-blue-300" />
         <span>Discover more Podcasts</span>
