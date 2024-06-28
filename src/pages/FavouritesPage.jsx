@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AiFillThunderbolt, AiFillHeart } from 'react-icons/ai';
+import { AiFillThunderbolt, AiFillHeart, AiOutlineDelete } from 'react-icons/ai';
 
 const FavouritesPage = () => {
   const [likedEpisodes, setLikedEpisodes] = useState([]);
@@ -33,6 +33,13 @@ const FavouritesPage = () => {
     });
   };
 
+  const handleRemoveAllLikedEpisodes = () => {
+    if (window.confirm('Are you sure you want to remove all liked episodes?')) {
+      setLikedEpisodes([]);
+      localStorage.removeItem('likedEpisodes');
+    }
+  };
+
   const handleSortChange = (order) => {
     setSortOrder(order);
   };
@@ -56,10 +63,21 @@ const FavouritesPage = () => {
 
   return (
     <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-4xl font-bold mb-6 text-gray-900 flex items-center">
-        <AiFillThunderbolt className="mr-2 text-yellow-500" />
-        Favourites
-      </h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-4xl font-bold text-gray-900 flex items-center">
+          <AiFillThunderbolt className="mr-2 text-yellow-500" />
+          Favourites
+        </h1>
+        {likedEpisodes.length > 0 && (
+          <button
+            onClick={handleRemoveAllLikedEpisodes}
+            className="px-4 py-2 rounded-full border bg-red-600 text-white flex items-center hover:bg-red-700 transition-colors"
+          >
+            <AiOutlineDelete className="mr-2" />
+            Remove All
+          </button>
+        )}
+      </div>
       
       <div className="mb-4 flex space-x-2">
         <button
