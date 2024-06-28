@@ -5,16 +5,24 @@ import { AiFillThunderbolt, AiFillHeart } from 'react-icons/ai';
 const FavouritesPage = () => {
   const [likedEpisodes, setLikedEpisodes] = useState([]);
   const [sortOrder, setSortOrder] = useState('A-Z');
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const storedLikedEpisodes = JSON.parse(localStorage.getItem('likedEpisodes')) || [];
-      console.log('Stored Liked Episodes:', storedLikedEpisodes);
-      setLikedEpisodes(storedLikedEpisodes);
-    } catch (error) {
-      console.error('Error loading liked episodes:', error);
-      setLikedEpisodes([]);
-    }
+    const fetchLikedEpisodes = () => {
+      setIsLoading(true);
+      try {
+        const storedLikedEpisodes = JSON.parse(localStorage.getItem('likedEpisodes')) || [];
+        console.log('Stored Liked Episodes:', storedLikedEpisodes);
+        setLikedEpisodes(storedLikedEpisodes);
+      } catch (error) {
+        console.error('Error loading liked episodes:', error);
+        setLikedEpisodes([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchLikedEpisodes();
   }, []);
 
   const handleUnlikeEpisode = (episodeId) => {
@@ -80,7 +88,11 @@ const FavouritesPage = () => {
         </button>
       </div>
 
-      {sortedEpisodes.length === 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900"></div>
+        </div>
+      ) : sortedEpisodes.length === 0 ? (
         <p className="text-gray-700">No liked episodes found.</p>
       ) : (
         <ul className="space-y-4">
