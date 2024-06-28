@@ -42,19 +42,27 @@ const PodcastPage = () => {
     setSelectedSeason(Number(event.target.value));
   };
 
-  const handleLikeEpisode = (episodeId) => {
+  const handleLikeEpisode = (episode, index) => {
     setLikedEpisodes((prevLikedEpisodes) => {
-      if (prevLikedEpisodes.includes(episodeId)) {
-        return prevLikedEpisodes.filter(id => id !== episodeId);
-      } else {
-        return [...prevLikedEpisodes, episodeId];
-      }
+      const episodeWithId = {
+        ...episode,
+        id: `${id}-${selectedSeason}-${index}`,
+        podcastId: id,
+        season: selectedSeason + 1
+      };
+      
+      const isLiked = prevLikedEpisodes.some(ep => ep.id === episodeWithId.id);
+      const updatedLikedEpisodes = isLiked
+        ? prevLikedEpisodes.filter(ep => ep.id !== episodeWithId.id)
+        : [...prevLikedEpisodes, episodeWithId];
+      
+      localStorage.setItem('likedEpisodes', JSON.stringify(updatedLikedEpisodes));
+      return updatedLikedEpisodes;
     });
   };
 
   useEffect(() => {
-    localStorage.setItem('likedEpisodes', JSON.stringify(likedEpisodes));
-    console.log('Liked Episodes:', likedEpisodes);
+    console.log('Updated Liked Episodes:', likedEpisodes);
   }, [likedEpisodes]);
 
   if (isLoading) {
@@ -104,7 +112,7 @@ const PodcastPage = () => {
               ))}
             </select>
             <span className="ml-4 text-gray-600">
-              
+              Episodes: {seasonEpisodesCount[selectedSeason]}
             </span>
           </div>
         </div>
@@ -112,22 +120,19 @@ const PodcastPage = () => {
 
       {podcast.seasons && podcast.seasons.length > 0 && (
         <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">
-            Episodes: {seasonEpisodesCount[selectedSeason]}
-          </h3>
           <ul className="space-y-4">
-            {podcast.seasons[selectedSeason].episodes.map((episode) => (
-              <li key={episode.id} className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center">
+            {podcast.seasons[selectedSeason].episodes.map((episode, index) => (
+              <li key={`${id}-${selectedSeason}-${index}`} className="bg-white p-4 rounded-lg shadow-lg flex justify-between items-center transition-shadow duration-200 hover:shadow-xl">
                 <div className="flex flex-col flex-grow mr-4">
                   <div className="font-bold text-gray-900">{episode.title}</div>
                   <p className="text-gray-700 mb-2">{episode.description}</p>
                   <audio controls src={episode.file} className="w-full"></audio>
                 </div>
                 <button
-                  onClick={() => handleLikeEpisode(episode.id)}
+                  onClick={() => handleLikeEpisode(episode, index)}
                   className="ml-4 p-2"
                 >
-                  {likedEpisodes.includes(episode.id) ? (
+                  {likedEpisodes.some(ep => ep.id === `${id}-${selectedSeason}-${index}`) ? (
                     <AiFillHeart className="text-red-600 text-2xl" />
                   ) : (
                     <AiOutlineHeart className="text-gray-600 text-2xl" />
