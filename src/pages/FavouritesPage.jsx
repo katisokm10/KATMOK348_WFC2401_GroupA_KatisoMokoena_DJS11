@@ -4,6 +4,7 @@ import { AiFillThunderbolt, AiFillHeart } from 'react-icons/ai';
 
 const FavouritesPage = () => {
   const [likedEpisodes, setLikedEpisodes] = useState([]);
+  const [sortOrder, setSortOrder] = useState('A-Z');
 
   useEffect(() => {
     try {
@@ -24,18 +25,66 @@ const FavouritesPage = () => {
     });
   };
 
+  const handleSortChange = (order) => {
+    setSortOrder(order);
+  };
+
+  const sortEpisodes = (episodes, order) => {
+    switch (order) {
+      case 'A-Z':
+        return [...episodes].sort((a, b) => a.title.localeCompare(b.title));
+      case 'Z-A':
+        return [...episodes].sort((a, b) => b.title.localeCompare(a.title));
+      case 'Most Recent':
+        return [...episodes].sort((a, b) => new Date(b.updated) - new Date(a.updated));
+      case 'Oldest':
+        return [...episodes].sort((a, b) => new Date(a.updated) - new Date(b.updated));
+      default:
+        return episodes;
+    }
+  };
+
+  const sortedEpisodes = sortEpisodes(likedEpisodes, sortOrder);
+
   return (
     <div className="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
       <h1 className="text-4xl font-bold mb-6 text-gray-900 flex items-center">
-        <AiFillThunderbolt className="mr-2 text-blue-500" />
+        <AiFillThunderbolt className="mr-2 text-yellow-500" />
         Favourites
       </h1>
       
-      {likedEpisodes.length === 0 ? (
+      <div className="mb-4 flex space-x-2">
+        <button
+          onClick={() => handleSortChange('A-Z')}
+          className={`px-4 py-2 rounded-full border ${sortOrder === 'A-Z' ? 'bg-blue-900 text-white' : 'bg-white text-blue-900'}`}
+        >
+          A-Z
+        </button>
+        <button
+          onClick={() => handleSortChange('Z-A')}
+          className={`px-4 py-2 rounded-full border ${sortOrder === 'Z-A' ? 'bg-blue-900 text-white' : 'bg-white text-blue-900'}`}
+        >
+          Z-A
+        </button>
+        <button
+          onClick={() => handleSortChange('Most Recent')}
+          className={`px-4 py-2 rounded-full border ${sortOrder === 'Most Recent' ? 'bg-blue-900 text-white' : 'bg-white text-blue-900'}`}
+        >
+          Most Recent
+        </button>
+        <button
+          onClick={() => handleSortChange('Oldest')}
+          className={`px-4 py-2 rounded-full border ${sortOrder === 'Oldest' ? 'bg-blue-900 text-white' : 'bg-white text-blue-900'}`}
+        >
+          Oldest
+        </button>
+      </div>
+
+      {sortedEpisodes.length === 0 ? (
         <p className="text-gray-700">No liked episodes found.</p>
       ) : (
         <ul className="space-y-4">
-          {likedEpisodes.map((episode) => (
+          {sortedEpisodes.map((episode) => (
             <li key={episode.id} className="bg-white p-4 rounded-lg shadow-md flex justify-between items-center">
               <div className="flex flex-col flex-grow mr-4">
                 <Link to={`/podcast/${episode.podcastId}`} className="font-bold text-gray-900">{episode.title}</Link>
