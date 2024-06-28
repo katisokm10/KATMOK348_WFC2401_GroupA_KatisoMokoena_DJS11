@@ -14,9 +14,7 @@ const Header = () => {
   }
 
   const handleSearch = (searchQuery) => {
-    console.log('Searching for:', searchQuery);
-    // Implement search logic, e.g., navigate to search results
-    // Example: navigate(`/search?q=${searchQuery}`);
+    navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
   };
 
   const handleLogout = () => {

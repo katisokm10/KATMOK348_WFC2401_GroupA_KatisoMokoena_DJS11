@@ -6,6 +6,8 @@ import GenrePage from './components/GenrePage';
 import FavouritesPage from './pages/FavouritesPage';
 import Header from './components/Header';
 import LoginPage from './pages/LoginPage';
+import SearchResults from './pages/SearchResults';
+
 
 const App = () => {
   return (
@@ -17,6 +19,8 @@ const App = () => {
         <Route path="/podcast/:id" element={<PodcastPage />} />
         <Route path="/genre/:id" element={<GenrePage />} />
         <Route path="/favourites" element={<FavouritesPage />} /> {/* Favourites page */}
+        <Route path="/search" element={<SearchResults />} />
+
       </Routes>
     </>
   );

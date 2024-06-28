@@ -33,9 +33,8 @@ const SearchBar = ({ onSearch }) => {
   );
 };
 
-// PropTypes validation
 SearchBar.propTypes = {
-  onSearch: PropTypes.func.isRequired, // Validate onSearch as a required function prop
+  onSearch: PropTypes.func.isRequired,
 };
 
 export default SearchBar;
